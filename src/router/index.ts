@@ -1,7 +1,7 @@
 import { createRouter,createWebHistory } from "vue-router";
 //在tsconfig.json添加完baseUrl和path后，在这里就可以用别名了
 import Home from '@/views/Home.vue'
-import Login from  '../views/Login.vue'
+import Login from  '../views/login/index.vue'
 
 // 2. 定义一些路由
 const routes = [
