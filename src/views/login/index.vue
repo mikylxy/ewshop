@@ -48,6 +48,19 @@
 <script lang="ts" setup>
   import {reactive,ref} from "vue";
   import {PersonOutline,LockClosedOutline} from "@vicons/ionicons5"
+  import {setup} from "naive-ui/es/radio/src/use-radio";
+  import {useUserStore} from '@/store/user'
+  import {useRouter} from "vue-router";
+  import {useMessage} from 'naive-ui'
+  //用来表单验证的
+  const formRef = ref()
+  const loading = ref(false)
+  const userStore = useUserStore()
+  const router = useRouter()
+  const message = useMessage();
+  //??????????
+  (<any>window).$message = useMessage();
+
 
   interface FormState {
     email: string;
@@ -63,7 +76,40 @@
   const rules = {
     //失去焦点时触发
     username: {required: true,message:'请输入用户名',trigger:'blur'},
-    password: {required: true,message: '请输入密码',trigger: 'blur'},
+    password: {required: true,message: '请输入密码', trigger: 'blur'},
+  }
+  //表单提交
+  const handleSubmit = ()=>{
+    //表单验证
+    formRef.value.validate(async (error:any) =>{
+      console.log(!error)
+      if (!error){
+        const {username,password} = formInline;
+
+        loading.value = true;
+
+        const params: FormState = {
+          email: username,
+          password
+        };
+        try {
+          console.log(params)
+          userStore.login(params).then(_res => {
+            console.log(_res)
+            //关闭窗口，登陆成功
+            message.success('登录成功')
+            loading.value = false
+            router.push({name: 'dashboard'})
+          }).catch(()=>{
+            loading.value = false
+          })
+        }
+
+        finally {
+          loading.value = false
+        }
+      }
+    })
   }
 </script>
 
